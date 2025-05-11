@@ -37,7 +37,7 @@ const User = sequelize.define('User', {
         allowNull: false,
         defaultValue: 'user' // ค่าเริ่มต้น
     },
-    departmentId: {
+    department_id: {
         type: DataTypes.INTEGER,
         allowNull: true, // สามารถเป็น null ได้หากผู้ใช้ไม่มีแผนก
         references: {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell
@@ -39,56 +39,22 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 
 
+
 export default function AdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [userData, setUserData] = useState([]);
-  const [departments, setDepartments] = useState([]);
-  const [userCount, setUserCount] = useState(0);
-  const [showPassword, setShowPassword] = useState({});
+  const [userData, setUserData] = useState();
 
-  useEffect(() => {
-    fetchUserData();
-    fetchDepartments();
-  }, []);
-
-  const getDepartmentName = (departmentId) => {
-    if (!departments || departments.length === 0) return 'Loading...';
-    const department = departments.find(dept => dept.id === departmentId);
-    return department ? department.name : 'Unknown Department';
-  };
-
-  const fetchDepartments = async () => {
-    try {
-      await axios.get(config.api_path + 'department/getAll').then(res => {
-        setDepartments(res.data.data);
-      });
-    } catch (error) {
-      console.error('Error fetching department data:', error);
-    }
-  }
-
-
-
-  const togglePasswordVisibility = (userId) => {
-    setShowPassword(prev => ({
-      ...prev,
-      [userId]: !prev[userId]
-    }));
-  };
+useEffect(() => {
+  fetchUserData();
+  console.log(userData);
+}, []);
 
   const fetchUserData = async () => {
     try {
       await axios.get(config.api_path + 'user/getAll').then(res => {
         setUserData(res.data.data);
-        setUserCount(res.data.data.length); // Update user count when data is fetched
-        // Initialize password visibility state for each user
-        const initialVisibility = {};
-        res.data.data.forEach(user => {
-          initialVisibility[user.id] = false;
-        });
-        setShowPassword(initialVisibility);
-      });
+      })
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -108,7 +74,9 @@ export default function AdminDashboard() {
 
 
 
-
+const countUser = ({userData}) => {
+  return userData.length;
+}
 
     
     return (
@@ -238,8 +206,8 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-500">Total Users</p>
-                    <h3 className="text-2xl font-bold">{userCount}</h3>
-                    <p className="text-sm text-green-500">Active now</p>
+                    <h3 className="text-2xl font-bold">2,543</h3>
+                    <p className="text-sm text-green-500">+12% from last month</p>
                   </div>
                   <div className="p-3 bg-blue-100 rounded-full">
                     <Users size={24} className="text-blue-600" />
@@ -344,7 +312,6 @@ export default function AdminDashboard() {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">username</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Password</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
@@ -355,21 +322,17 @@ export default function AdminDashboard() {
                         <td className="px-6 py-4 whitespace-nowrap">{order.id}</td>
                         <td className="px-6 py-4 whitespace-nowrap">{order.name}</td>
                         <td className="px-6 py-4 whitespace-nowrap">{order.username}</td>
-                        <td className="px-6 py-4 whitespace-nowrap flex items-center">
-                          <span className="mr-2">
-                            {showPassword[order.id] ? order.password : '••••••••'}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {getDepartmentName(order.departmentId)}
-                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap" >{order.password}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{order.departmentId}</td>
       
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex space-x-2">
-                            <button onClick={() => togglePasswordVisibility(order.id)} className="p-1 text-blue-600 hover:text-blue-800">
+                            <button className="p-1 text-blue-600 hover:text-blue-800">
                               <Eye size={18} />
                             </button>
-                           
+                            <button className="p-1 text-red-600 hover:text-red-800">
+                              <Trash2 size={18} />
+                            </button>
                           </div>
                         </td>
                       </tr>
