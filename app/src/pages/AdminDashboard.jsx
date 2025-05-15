@@ -1,54 +1,52 @@
-import { use, useEffect, useState } from 'react';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  PieChart, Pie, Cell
-} from 'recharts';
-import { 
-  Users, ShoppingBag, DollarSign, Activity, 
-  Bell, Search, Menu, Settings, LogOut, Home, 
-  FileText, Box, MessageSquare, Trash2, Eye
-} from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import Sidebar from '../components/Sidebar';
+import AdminHeader from '../components/AdminHeader';
+import UserTable from '../components/UserTable';
 import axios from 'axios';
 import config from '../config';
-// Sample data for charts and tables
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  PieChart,
+  Pie,
+  Cell
+} from 'recharts';
+import { Users, ShoppingBag, DollarSign, Activity, Eye, Trash2 } from 'lucide-react';
 
-
-
-
-
+// Mock data
 const salesData = [
   { name: 'Jan', sales: 4000 },
   { name: 'Feb', sales: 3000 },
   { name: 'Mar', sales: 5000 },
-  { name: 'Apr', sales: 2780 },
-  { name: 'May', sales: 1890 },
-  { name: 'Jun', sales: 2390 },
+  { name: 'Apr', sales: 4780 },
+  { name: 'May', sales: 5890 },
+  { name: 'Jun', sales: 4390 },
+  { name: 'Jul', sales: 4490 },
 ];
 
 const pieData = [
   { name: 'Electronics', value: 400 },
   { name: 'Clothing', value: 300 },
-  { name: 'Food', value: 200 },
-  { name: 'Books', value: 100 },
+  { name: 'Home', value: 300 },
+  { name: 'Books', value: 200 },
 ];
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
-
-
-
-
-
 
 export default function AdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [userData, setUserData] = useState();
 
-useEffect(() => {
-  fetchUserData();
-  console.log(userData);
-}, []);
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   const fetchUserData = async () => {
     try {
@@ -64,140 +62,11 @@ useEffect(() => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // Status badge component
-  const StatusBadge = ({ status }) => {
-    const colorMap = {
-      'Completed': 'bg-green-100 text-green-800',
-      'Processing': 'bg-blue-100 text-blue-800',
-      'Pending': 'bg-yellow-100 text-yellow-800',
-    };
-
-
-
-const countUser = ({userData}) => {
-  return userData.length;
-}
-
-    
-    return (
-      <span className={`px-2 py-1 text-xs font-medium rounded-full ${colorMap[status]}`}>
-        {status}
-      </span>
-    );
-  };
-
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className={`bg-gray-900 text-white ${isSidebarOpen ? 'w-64' : 'w-20'} transition-all duration-300 ease-in-out`}>
-        <div className="flex items-center justify-between p-4 border-b border-gray-700">
-          {isSidebarOpen && <h1 className="text-xl font-bold">Admin Panel</h1>}
-          <button onClick={toggleSidebar} className="p-1 rounded-md hover:bg-gray-700">
-            <Menu size={24} />
-          </button>
-        </div>
-        <nav className="p-4">
-          <ul className="space-y-2">
-            <li>
-              <button 
-                onClick={() => setActiveTab('dashboard')}
-                className={`flex items-center w-full p-2 rounded-md hover:bg-gray-700 ${activeTab === 'dashboard' ? 'bg-gray-700' : ''}`}
-              >
-                <Home size={20} />
-                {isSidebarOpen && <span className="ml-3">Dashboard</span>}
-              </button>
-            </li>
-            <li>
-              <button 
-                onClick={() => setActiveTab('users')}
-                className={`flex items-center w-full p-2 rounded-md hover:bg-gray-700 ${activeTab === 'users' ? 'bg-gray-700' : ''}`}
-              >
-                <Users size={20} />
-                {isSidebarOpen && <span className="ml-3">Users</span>}
-              </button>
-            </li>
-            <li>
-              <button 
-                onClick={() => setActiveTab('products')}
-                className={`flex items-center w-full p-2 rounded-md hover:bg-gray-700 ${activeTab === 'products' ? 'bg-gray-700' : ''}`}
-              >
-                <Box size={20} />
-                {isSidebarOpen && <span className="ml-3">Products</span>}
-              </button>
-            </li>
-            <li>
-              <button 
-                onClick={() => setActiveTab('orders')}
-                className={`flex items-center w-full p-2 rounded-md hover:bg-gray-700 ${activeTab === 'orders' ? 'bg-gray-700' : ''}`}
-              >
-                <ShoppingBag size={20} />
-                {isSidebarOpen && <span className="ml-3">Orders</span>}
-              </button>
-            </li>
-            <li>
-              <button 
-                onClick={() => setActiveTab('reports')}
-                className={`flex items-center w-full p-2 rounded-md hover:bg-gray-700 ${activeTab === 'reports' ? 'bg-gray-700' : ''}`}
-              >
-                <FileText size={20} />
-                {isSidebarOpen && <span className="ml-3">Reports</span>}
-              </button>
-            </li>
-            <li>
-              <button 
-                onClick={() => setActiveTab('messages')}
-                className={`flex items-center w-full p-2 rounded-md hover:bg-gray-700 ${activeTab === 'messages' ? 'bg-gray-700' : ''}`}
-              >
-                <MessageSquare size={20} />
-                {isSidebarOpen && <span className="ml-3">Messages</span>}
-              </button>
-            </li>
-          </ul>
-          <div className="pt-4 mt-6 border-t border-gray-700">
-            <button className="flex items-center w-full p-2 rounded-md hover:bg-gray-700">
-              <Settings size={20} />
-              {isSidebarOpen && <span className="ml-3">Settings</span>}
-            </button>
-            <button className="flex items-center w-full p-2 rounded-md hover:bg-gray-700">
-              <LogOut size={20} />
-              {isSidebarOpen && <span className="ml-3">Logout</span>}
-            </button>
-          </div>
-        </nav>
-      </div>
-
-      {/* Main Content */}
+      <Sidebar isOpen={isSidebarOpen} activeTab={activeTab} setActiveTab={setActiveTab} toggleSidebar={toggleSidebar} />
       <div className="flex-1 overflow-x-hidden overflow-y-auto">
-        {/* Header */}
-        <header className="bg-white shadow-sm">
-          <div className="flex items-center justify-between px-6 py-4">
-            <h2 className="text-xl font-semibold text-gray-800">
-              {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
-            </h2>
-            <div className="flex items-center space-x-4">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="w-64 pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
-              </div>
-              <button className="relative p-2 bg-gray-100 rounded-full hover:bg-gray-200">
-                <Bell size={20} />
-                <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
-              </button>
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-medium">
-                  AD
-                </div>
-                <span className="hidden md:inline-block font-medium">Admin User</span>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        {/* Dashboard Content */}
+        <AdminHeader activeTab={activeTab} />
         {activeTab === 'dashboard' && (
           <div className="p-6">
             {/* Stats Cards */}

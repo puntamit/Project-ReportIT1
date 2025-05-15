@@ -1,11 +1,17 @@
-import React from 'react'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import AdminDashboard from './pages/AdminDashboard';
+import UsersMange from './pages/UsersMange';
 
 const App = () => {
   return (
-    <div>
-      <div className="text-red-500">Test</div>
-    </div>
-  ) 
+    <Router>
+      <Routes>
+        <Route path="/" element={<AdminDashboard />} />
+        <Route path="/users" element={<UsersMange />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
