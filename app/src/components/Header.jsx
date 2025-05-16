@@ -1,6 +1,12 @@
 import { Bell, Search } from 'lucide-react';
+import { use } from 'react';
 
-export default function AdminHeader({ activeTab }) {
+export default function Header({ activeTab, userName }) {
+
+
+
+
+
   return (
     <header className="bg-white shadow-sm">
       <div className="flex items-center justify-between px-6 py-4">
@@ -21,10 +27,8 @@ export default function AdminHeader({ activeTab }) {
             <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
           </button>
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-medium">
-              AD
-            </div>
-            <span className="hidden md:inline-block font-medium">Admin User</span>
+            
+            <span className="hidden md:inline-block font-medium">คุณ: {userName}</span>
           </div>
         </div>
       </div>

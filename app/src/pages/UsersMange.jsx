@@ -3,7 +3,7 @@ import axios from 'axios';
 import config from '../config';
 import { Eye, Trash2, Edit } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
-import AdminHeader from '../components/AdminHeader';
+import Header from '../components/Header';
 import UserTable from '../components/UserTable';
 
 export default function UsersMange() {
@@ -65,9 +65,15 @@ export default function UsersMange() {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      <Sidebar isOpen={isSidebarOpen} activeTab={activeTab} setActiveTab={setActiveTab} toggleSidebar={toggleSidebar} />
+      <Sidebar
+        isOpen={isSidebarOpen}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        toggleSidebar={toggleSidebar}
+        userRole="admin"
+      />
       <div className="flex-1 overflow-x-hidden overflow-y-auto">
-        <AdminHeader activeTab={activeTab} />
+        <Header activeTab={activeTab} userRole="admin"  />
         <div className="p-6">
           <h2 className="text-2xl font-bold mb-4">จัดการผู้ใช้</h2>
           <div className="flex gap-4 mb-4">

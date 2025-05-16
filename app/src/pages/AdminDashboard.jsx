@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar';
-import AdminHeader from '../components/AdminHeader';
+import Header from '../components/Header';
 import UserTable from '../components/UserTable';
 import axios from 'axios';
 import config from '../config';
@@ -64,9 +64,15 @@ export default function AdminDashboard() {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      <Sidebar isOpen={isSidebarOpen} activeTab={activeTab} setActiveTab={setActiveTab} toggleSidebar={toggleSidebar} />
+      <Sidebar
+        isOpen={isSidebarOpen}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        toggleSidebar={toggleSidebar}
+        userRole="admin"
+      />
       <div className="flex-1 overflow-x-hidden overflow-y-auto">
-        <AdminHeader activeTab={activeTab} />
+        <Header activeTab={activeTab} userRole="admin" />
         {activeTab === 'dashboard' && (
           <div className="p-6">
             {/* Stats Cards */}

@@ -6,7 +6,7 @@ import config from '../config';
 import Swal from 'sweetalert2';
 import { FaUser, FaLock, FaSignInAlt } from 'react-icons/fa';
 
-console.log(config.api_path)
+
 const Login = () => {
 const [userName, setUserName] = useState('')
 const [password, setPassword] = useState('')
@@ -28,11 +28,12 @@ const handleLogin = async (e) => {
                     icon: 'success',
                     timer: 2000,
                 });
+                // เพิ่มบรรทัดนี้!
+                 localStorage.setItem('userName', res.data.data[0].name);
+            
                 if (res.data.data[0].role === 'admin') {
-                    console.log(res.data.data[0].role);
                     navigate('/admindashboard');
                 } else if (res.data.data[0].role === 'user') {  
-                    console.log(res.data.data[0].role);
                     navigate('/homeuser');
                 }
             }
@@ -97,17 +98,6 @@ const handleLogin = async (e) => {
 
               {/* Remember Me & Forgot Password */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <input
-                    id="remember-me"
-                    name="remember-me"
-                    type="checkbox"
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                    Remember me
-                  </label>
-                </div>
                 <div className="text-sm">
                   <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
                     Forgot password?

@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+
+input [type="text"]{
+    color: black;
+}
