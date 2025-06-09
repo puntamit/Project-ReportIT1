@@ -20,4 +20,5 @@ const Category = sequelize.define('Category', {
     timestamps: true, // เพิ่ม createdAt และ updatedAt อัตโนมัติ
 });
 
+
 module.exports = Category;

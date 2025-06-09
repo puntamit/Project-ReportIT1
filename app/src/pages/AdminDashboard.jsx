@@ -1,62 +1,86 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
-import UserTable from '../components/UserTable';
+import { Users, ShoppingBag, DollarSign, Activity } from 'lucide-react';
+import TicketChart from '../components/TicketChart'; // นำเข้า Chart Component
 import axios from 'axios';
 import config from '../config';
-import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  PieChart,
-  Pie,
-  Cell
-} from 'recharts';
-import { Users, ShoppingBag, DollarSign, Activity, Eye, Trash2 } from 'lucide-react';
-
-// Mock data
-const salesData = [
-  { name: 'Jan', sales: 4000 },
-  { name: 'Feb', sales: 3000 },
-  { name: 'Mar', sales: 5000 },
-  { name: 'Apr', sales: 4780 },
-  { name: 'May', sales: 5890 },
-  { name: 'Jun', sales: 4390 },
-  { name: 'Jul', sales: 4490 },
-];
-
-const pieData = [
-  { name: 'Electronics', value: 400 },
-  { name: 'Clothing', value: 300 },
-  { name: 'Home', value: 300 },
-  { name: 'Books', value: 200 },
-];
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 export default function AdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [userData, setUserData] = useState();
+  const [ticketData, setTicketData] = useState([]);
+  const [chartData, setChartData] = useState([]);
+  const [timeRange, setTimeRange] = useState('daily');
+  const [totalUsers, setTotalUsers] = useState(0); // เก็บจำนวนผู้ใช้ทั้งหมด
+  const [users, setUsers] = useState([]); // เก็บข้อมูลผู้ใช้
 
   useEffect(() => {
-    fetchUserData();
+    // ดึง totalUsers จาก localStorage
+    const storedTotalUsers = localStorage.getItem('totalUsers');
+    if (storedTotalUsers) {
+      setTotalUsers(parseInt(storedTotalUsers, 10)); // แปลงเป็นตัวเลข
+    }
   }, []);
 
-  const fetchUserData = async () => {
+  useEffect(() => {
+    fetchTicketData();
+  }, []);
+
+  useEffect(() => {
+    processChartData();
+  }, [ticketData, timeRange]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await axios.get(`${config.api_path}users/getAll`); // ดึงข้อมูลผู้ใช้ทั้งหมด
+        setUsers(res.data.data); // เก็บข้อมูลผู้ใช้ใน state
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  const fetchTicketData = async () => {
     try {
-      await axios.get(config.api_path + 'user/getAll').then(res => {
-        setUserData(res.data.data);
-      })
+      const res = await axios.get(config.api_path + 'ticket/getAll');
+      setTicketData(res.data.data);
     } catch (error) {
-      console.error('Error fetching user data:', error);
+      console.error('Error fetching ticket data:', error);
     }
-  }
+  };
+
+  const processChartData = () => {
+    const groupedData = {};
+    ticketData.forEach((ticket) => {
+      const date = new Date(ticket.createdAt);
+      let key;
+      if (timeRange === 'daily') {
+        key = date.toLocaleDateString();
+      } else if (timeRange === 'weekly') {
+        const week = `${date.getFullYear()}-W${Math.ceil(date.getDate() / 7)}`;
+        key = week;
+      } else if (timeRange === 'monthly') {
+        key = `${date.getFullYear()}-${date.getMonth() + 1}`;
+      }
+
+      if (!groupedData[key]) {
+        groupedData[key] = { name: key, new: 0, resolved: 0, pending: 0 };
+      }
+      if (ticket.status === 'new') {
+        groupedData[key].new += 1;
+      } else if (ticket.status === 'resolved') {
+        groupedData[key].resolved += 1;
+      } else if (ticket.status === 'pending') {
+        groupedData[key].pending += 1;
+      }
+    });
+
+    const chartArray = Object.values(groupedData);
+    setChartData(chartArray);
+  };
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -72,150 +96,28 @@ export default function AdminDashboard() {
         userRole="admin"
       />
       <div className="flex-1 overflow-x-hidden overflow-y-auto">
-        <Header activeTab={activeTab} userRole="admin" />
+        <Header activeTab={activeTab} userRole="admin" userName={localStorage.getItem('userName')} />
         {activeTab === 'dashboard' && (
           <div className="p-6">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+              {/* Total Users Card */}
               <div className="bg-white rounded-lg shadow p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-500">Total Users</p>
-                    <h3 className="text-2xl font-bold">2,543</h3>
-                    <p className="text-sm text-green-500">+12% from last month</p>
+                    <h3 className="text-2xl font-bold">{totalUsers}</h3> {/* แสดง totalUsers */}
                   </div>
                   <div className="p-3 bg-blue-100 rounded-full">
                     <Users size={24} className="text-blue-600" />
                   </div>
                 </div>
               </div>
-              <div className="bg-white rounded-lg shadow p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Total Orders</p>
-                    <h3 className="text-2xl font-bold">1,259</h3>
-                    <p className="text-sm text-green-500">+5% from last month</p>
-                  </div>
-                  <div className="p-3 bg-green-100 rounded-full">
-                    <ShoppingBag size={24} className="text-green-600" />
-                  </div>
-                </div>
-              </div>
-              <div className="bg-white rounded-lg shadow p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Total Revenue</p>
-                    <h3 className="text-2xl font-bold">$45,290</h3>
-                    <p className="text-sm text-red-500">-3% from last month</p>
-                  </div>
-                  <div className="p-3 bg-purple-100 rounded-full">
-                    <DollarSign size={24} className="text-purple-600" />
-                  </div>
-                </div>
-              </div>
-              <div className="bg-white rounded-lg shadow p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Conversion Rate</p>
-                    <h3 className="text-2xl font-bold">3.75%</h3>
-                    <p className="text-sm text-green-500">+0.5% from last month</p>
-                  </div>
-                  <div className="p-3 bg-yellow-100 rounded-full">
-                    <Activity size={24} className="text-yellow-600" />
-                  </div>
-                </div>
-              </div>
+              {/* Add more Stat Cards here */}
             </div>
 
             {/* Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-              <div className="bg-white rounded-lg shadow p-6 lg:col-span-2">
-                <h4 className="text-lg font-semibold mb-4">Monthly Sales</h4>
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={salesData}
-                      margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Bar dataKey="sales" fill="#4F46E5" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-              <div className="bg-white rounded-lg shadow p-6">
-                <h4 className="text-lg font-semibold mb-4">Sales by Category</h4>
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={pieData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      >
-                        {pieData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </div>
-
-            {/* Recent Orders */}
-            <div className="bg-white rounded-lg shadow">
-              <div className="flex items-center justify-between p-6 border-b">
-                <h4 className="text-lg font-semibold">รายชื่อสมาชิก</h4>
-                <button className="text-sm text-blue-600 hover:text-blue-800">View All</button>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User ID</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">username</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Password</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {userData && userData.map((order) => 
-
-                      <tr  className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">{order.id}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">{order.name}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">{order.username}</td>
-                        <td className="px-6 py-4 whitespace-nowrap" >{order.password}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">{order.departmentId}</td>
-      
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex space-x-2">
-                            <button className="p-1 text-blue-600 hover:text-blue-800">
-                              <Eye size={18} />
-                            </button>
-                            <button className="p-1 text-red-600 hover:text-red-800">
-                              <Trash2 size={18} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+           
           </div>
         )}
 

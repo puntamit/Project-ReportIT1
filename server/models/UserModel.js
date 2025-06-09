@@ -37,7 +37,7 @@ const User = sequelize.define('User', {
         allowNull: false,
         defaultValue: 'user' // ค่าเริ่มต้น
     },
-    department_id: {
+    department_Id: {
         type: DataTypes.INTEGER,
         allowNull: true, // สามารถเป็น null ได้หากผู้ใช้ไม่มีแผนก
         references: {
@@ -51,8 +51,7 @@ const User = sequelize.define('User', {
 });
 
 // สร้างความสัมพันธ์ระหว่าง User และ Department
-User.belongsTo(Department, { foreignKey: 'departmentId', as: 'department' });
+User.belongsTo(Department, { foreignKey: 'department_Id', as: 'department' });
 
-
-User.sync({ alter: true }) // sync table user to database
+// sync table user to database
 module.exports = User;

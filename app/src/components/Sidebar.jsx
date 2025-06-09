@@ -1,5 +1,6 @@
 import { 
-  Users, ShoppingBag, Box, FileText, MessageSquare, Settings, LogOut, Home, Menu 
+  
+  Users, ShoppingBag, Box, FileText, MessageSquare, Settings, LogOut, Home, Menu , Table, Ticket
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -29,42 +30,20 @@ function AdminSidebar({ isOpen, activeTab, setActiveTab, toggleSidebar, handleLo
             </div>
           </Link>
         </li>
+        
+
+        <Link to={'/tiketMange'}>
+        
         <li>
-          <button 
-            onClick={() => setActiveTab('products')}
-            className={`flex items-center w-full p-2 rounded-md hover:bg-gray-700 ${activeTab === 'products' ? 'bg-gray-700' : ''}`}
-          >
-            <Box size={20} />
-            {isOpen && <span className="ml-3">Products</span>}
-          </button>
-        </li>
-        <li>
-          <button 
-            onClick={() => setActiveTab('orders')}
-            className={`flex items-center w-full p-2 rounded-md hover:bg-gray-700 ${activeTab === 'orders' ? 'bg-gray-700' : ''}`}
-          >
-            <ShoppingBag size={20} />
-            {isOpen && <span className="ml-3">Orders</span>}
-          </button>
-        </li>
-        <li>
-          <button 
-            onClick={() => setActiveTab('reports')}
-            className={`flex items-center w-full p-2 rounded-md hover:bg-gray-700 ${activeTab === 'reports' ? 'bg-gray-700' : ''}`}
-          >
-            <FileText size={20} />
-            {isOpen && <span className="ml-3">Reports</span>}
-          </button>
-        </li>
-        <li>
-          <button 
+          <button   
             onClick={() => setActiveTab('messages')}
             className={`flex items-center w-full p-2 rounded-md hover:bg-gray-700 ${activeTab === 'messages' ? 'bg-gray-700' : ''}`}
           >
-            <MessageSquare size={20} />
-            {isOpen && <span className="ml-3">Messages</span>}
+            <Ticket size={20} />
+            {isOpen && <span className="ml-3">Ticket</span>}
           </button>
         </li>
+        </Link>
       </ul>
       <div className="pt-4 mt-6 border-t border-gray-700">
         <button className="flex items-center w-full p-2 rounded-md hover:bg-gray-700">
@@ -98,24 +77,17 @@ function UserSidebar({ isOpen, activeTab, setActiveTab, toggleSidebar, handleLog
             </div>
           </Link>
         </li>
+        <Link to="/reportUser">
         <li>
           <button 
-            onClick={() => setActiveTab('orders')}
+            onClick={() => setActiveTab('ตารางแจ้งซ่อม')}
             className={`flex items-center w-full p-2 rounded-md hover:bg-gray-700 ${activeTab === 'orders' ? 'bg-gray-700' : ''}`}
           >
-            <ShoppingBag size={20} />
-            {isOpen && <span className="ml-3">My Orders</span>}
+            <Table size={20} />
+            {isOpen && <span className="ml-3">My Report</span>}
           </button>
         </li>
-        <li>
-          <button 
-            onClick={() => setActiveTab('messages')}
-            className={`flex items-center w-full p-2 rounded-md hover:bg-gray-700 ${activeTab === 'messages' ? 'bg-gray-700' : ''}`}
-          >
-            <MessageSquare size={20} />
-            {isOpen && <span className="ml-3">Messages</span>}
-          </button>
-        </li>
+        </Link>
       </ul>
       <div className="pt-4 mt-6 border-t border-gray-700">
         <button className="flex items-center w-full p-2 rounded-md hover:bg-gray-700">
@@ -139,6 +111,9 @@ export default function Sidebar({ isOpen, activeTab, setActiveTab, toggleSidebar
 
   const handleLogout = () => {
     localStorage.removeItem('userName');
+    localStorage.removeItem('department_Id')
+    localStorage.removeItem('user_Id')
+    localStorage.removeItem('totalUsers')
     navigate('/');
   };
 

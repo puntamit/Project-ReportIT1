@@ -18,7 +18,7 @@ const Ticket = sequelize.define('Ticket', {
         allowNull: true,
     },
     status: {
-        type: DataTypes.ENUM('เปิด', 'กำลังดำเนินการ', 'ปิด'),
+        type: DataTypes.ENUM('เปิด', 'กำลังดำเนินการ', 'ปิดงาน', 'ยกเลิก'),
         allowNull: false,
         defaultValue: 'เปิด',
     },
@@ -30,7 +30,7 @@ const Ticket = sequelize.define('Ticket', {
         },
         allowNull: false,
     },
-    employee_id: {
+    user_id: {
         type: DataTypes.INTEGER,
         references: {
             model: User,
@@ -59,5 +59,6 @@ const Ticket = sequelize.define('Ticket', {
     tableName: 'tickets', // ชื่อ table ในฐานข้อมูล
     timestamps: true, // เพิ่ม createdAt และ updatedAt อัตโนมัติ
 });
+
 
 module.exports = Ticket;

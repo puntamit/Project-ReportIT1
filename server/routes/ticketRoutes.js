@@ -9,5 +9,7 @@ router.post('/create', ticketController.createTicket); // เพิ่ม Ticket
 router.put('/update/:id', ticketController.updateTicket); // อัปเดต Ticket
 router.delete('/delete/:id', ticketController.deleteTicket); // ลบ Ticket
 router.put('/updateStatus/:id', ticketController.updateTicketStatus); // อัปเดตสถานะ Ticket
+router.get('/user/:user_id', ticketController.getTicketsByUserId);
+
 
 module.exports = router;

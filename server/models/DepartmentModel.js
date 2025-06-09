@@ -25,6 +25,5 @@ const Department = sequelize.define('department', {
 
 );
 
-Department.sync({alter: true}) // sync table department to database
 
 module.exports = Department;

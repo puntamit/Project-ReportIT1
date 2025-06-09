@@ -28,9 +28,13 @@ const handleLogin = async (e) => {
                     icon: 'success',
                     timer: 2000,
                 });
+
+                
                 // เพิ่มบรรทัดนี้!
                  localStorage.setItem('userName', res.data.data[0].name);
-            
+                 localStorage.setItem('department_Id', res.data.data[0].department_Id)
+                 localStorage.setItem('user_Id', res.data.data[0].id)
+
                 if (res.data.data[0].role === 'admin') {
                     navigate('/admindashboard');
                 } else if (res.data.data[0].role === 'user') {  
@@ -46,7 +50,7 @@ const handleLogin = async (e) => {
     } catch (e) {
         Swal.fire({
             title: 'Error!',
-            text: e.message || 'An unexpected error occurred',
+            text: 'ชื่อผู้ใช้หรือรหัสผ่านของคุณไม่ถูกต้อง' || e.message ,
             icon: 'error',
         });
     }

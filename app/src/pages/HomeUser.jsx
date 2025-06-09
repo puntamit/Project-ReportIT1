@@ -7,7 +7,7 @@ const HomeUser = () => {
   const [isOpen, setIsOpen] = useState(true)
   const [activeTab, setActiveTab] = useState('dashboard')
   const userName = localStorage.getItem('userName');
-
+  
   return (
     <div className="flex h-screen bg-gray-100">
       <Sidebar

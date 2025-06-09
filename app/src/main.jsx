@@ -6,6 +6,8 @@ import Login from './pages/Login'
 import AdminDashboard from './pages/AdminDashboard'
 import HomeUser from './pages/HomeUser'
 import UsersMange from './pages/UsersMange'
+import ReportUser from './pages/ReportUser'
+import { TicketMange } from './pages/TicketMange'
 const router = createBrowserRouter([
   {
       path: "/",
@@ -22,10 +24,15 @@ const router = createBrowserRouter([
   {
     path: "/users",
     element: <UsersMange />
-  }
-
-
-
+  },
+{
+  path: "/reportUser",
+  element: <ReportUser />
+},
+{
+  path: "/tiketMange",
+  element: <TicketMange /> 
+}
 
 ])
 
